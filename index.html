@@ -3,299 +3,461 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlinkFashion | 60-Minute Fashion Delivery in Bengaluru</title>
+    <title>CyberGuard Quest | Educational Cybersecurity Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         /* Custom Styles */
         body {
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden; /* Prevent horizontal scroll */
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #0f0f23, #1a1a3a, #2d2d5f);
         }
 
-        .font-playfair {
-            font-family: 'Playfair Display', serif;
+        .font-orbitron {
+            font-family: 'Orbitron', monospace;
         }
         
-        /* Gradient text effect */
-        .gradient-text {
-            background: linear-gradient(45deg, #f87171, #fb923c, #f59e0b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* Cybersecurity theme colors */
+        .cyber-green {
+            color: #00ff41;
+        }
+        .cyber-red {
+            color: #ff073a;
+        }
+        .cyber-blue {
+            color: #007cf0;
+        }
+        .cyber-yellow {
+            color: #ffbe0b;
         }
 
-        /* Hero background animation */
-        .hero-bg {
-            background: linear-gradient(-45deg, #111827, #1f2937, #374151, #4b5563);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-        }
-        
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Floating animation for product cards */
-        .card-float {
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-        }
-        .card-float:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        /* Game grid */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(25, 20px);
+            grid-template-rows: repeat(25, 20px);
+            gap: 1px;
+            background: #000;
+            border: 2px solid #00ff41;
+            padding: 10px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
         }
 
-        /* Pulsing CTA button */
-        .pulse-button {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+        .grid-cell {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #1a1a3a, #2d2d5f);
+            border: 1px solid rgba(0, 255, 65, 0.1);
+            position: relative;
         }
 
-        /* Fade-in on scroll animation */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        .grid-cell:nth-child(odd) {
+            background: linear-gradient(45deg, #0f0f23, #1a1a3a);
         }
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
+
+        /* Player character */
+        .player {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #00ff41;
+            border: 2px solid #fff;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .player.facing-up::before {
+            content: "▲";
+        }
+        .player.facing-down::before {
+            content: "▼";
+        }
+        .player.facing-left::before {
+            content: "◄";
+        }
+        .player.facing-right::before {
+            content: "►";
+        }
+
+        /* UI panels */
+        .game-ui {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #007cf0;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 124, 240, 0.3);
+        }
+
+        .health-bar {
+            background: linear-gradient(90deg, #ff073a, #ffbe0b);
+            height: 20px;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .health-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: healthShine 2s infinite;
+        }
+
+        @keyframes healthShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Glowing text effect */
+        .glow-text {
+            text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+        }
+
+        /* Computer circuit background pattern */
+        .circuit-bg {
+            background-image: 
+                linear-gradient(90deg, rgba(0,255,65,0.1) 1px, transparent 1px),
+                linear-gradient(rgba(0,255,65,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* Floating animation for decorative elements */
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Pulse animation for important elements */
+        .pulse-glow {
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { 
+                box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+                transform: scale(1.02);
+            }
+        }
+
+        /* Instructions panel */
+        .instructions {
+            background: linear-gradient(135deg, rgba(0,124,240,0.1), rgba(0,255,65,0.1));
+            border: 1px solid rgba(0,255,65,0.3);
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white">
+<body class="text-white circuit-bg min-h-screen">
 
-    <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-md">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-3xl font-bold font-playfair tracking-wider">Blink<span class="gradient-text">Fashion</span></h1>
-            <nav class="hidden md:flex space-x-8 items-center">
-                <a href="#how-it-works" class="hover:text-orange-400 transition-colors">How It Works</a>
-                <a href="#collections" class="hover:text-orange-400 transition-colors">Collections</a>
-                <a href="#testimonials" class="hover:text-orange-400 transition-colors">Testimonials</a>
-            </nav>
-            <a href="#" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105">
-                Shop Now
-            </a>
+    <!-- Game Header -->
+    <header class="bg-black bg-opacity-50 border-b-2 border-cyan-400 p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-orbitron font-bold cyber-green glow-text">
+                CyberGuard Quest
+            </h1>
+            <div class="text-sm cyber-blue">
+                Navigate the computer's inner world • Learn cybersecurity • Stay safe!
+            </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <main class="hero-bg pt-32 pb-20">
-        <div class="container mx-auto px-6 text-center">
-            
-            <h2 class="text-4xl md:text-6xl lg:text-7xl font-playfair font-extrabold leading-tight mb-4">
-                Bengaluru's Style Emergency?
+    <!-- Main Game Container -->
+    <div class="container mx-auto p-6 flex flex-col lg:flex-row gap-6">
+        
+        <!-- Left Panel - Game Stats -->
+        <div class="lg:w-1/4 space-y-4">
+            <!-- Health & Money -->
+            <div class="game-ui p-4">
+                <h3 class="font-orbitron font-bold cyber-blue mb-3">System Status</h3>
+                
+                <!-- Health -->
+                <div class="mb-4">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm">System Health</span>
+                        <span class="text-sm cyber-green" id="health-display">100/100</span>
+                    </div>
+                    <div class="bg-gray-800 rounded-full h-5 overflow-hidden">
+                        <div class="health-bar h-full" style="width: 100%" id="health-bar"></div>
+                    </div>
+                </div>
+
+                <!-- Money -->
+                <div class="mb-4">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm">Credits</span>
+                        <span class="text-sm cyber-yellow" id="money-display">$0</span>
+                    </div>
+                    <div class="cyber-yellow text-lg font-bold">💰 <span id="money-amount">0</span></div>
+                </div>
+
+                <!-- Position -->
+                <div class="text-sm">
+                    <span>Position: </span>
+                    <span class="cyber-green" id="position-display">X: 12, Y: 12</span>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="instructions p-4 rounded-lg">
+                <h3 class="font-orbitron font-bold cyber-blue mb-3">Mission Control</h3>
+                <div class="text-sm space-y-2">
+                    <p><kbd class="bg-gray-800 px-2 py-1 rounded">↑</kbd> Move Up</p>
+                    <p><kbd class="bg-gray-800 px-2 py-1 rounded">↓</kbd> Move Down</p>
+                    <p><kbd class="bg-gray-800 px-2 py-1 rounded">←</kbd> Move Left</p>
+                    <p><kbd class="bg-gray-800 px-2 py-1 rounded">→</kbd> Move Right</p>
+                </div>
+                <div class="mt-4 text-xs cyber-yellow">
+                    <p>🎯 Objective: Navigate the computer system safely</p>
+                    <p>⚠️ Avoid malware and learn cybersecurity!</p>
+                </div>
+            </div>
+
+            <!-- Game Info -->
+            <div class="game-ui p-4">
+                <h3 class="font-orbitron font-bold cyber-blue mb-3">Game Info</h3>
+                <div class="text-sm space-y-1">
+                    <p>Level: <span class="cyber-green">1</span></p>
+                    <p>Score: <span class="cyber-green" id="score">0</span></p>
+                    <p>Steps: <span class="cyber-green" id="steps">0</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel - Game Grid -->
+        <div class="lg:w-1/2 flex flex-col items-center">
+            <h2 class="text-2xl font-orbitron font-bold cyber-green mb-4 glow-text">
+                Inside the Computer System
             </h2>
-            <h3 class="text-4xl md:text-5xl lg:text-6xl font-playfair font-extrabold leading-tight mb-6">
-                Solved in <span class="gradient-text" id="countdown">60:00</span> Minutes.
-            </h3>
-            <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-10">
-                Spontaneous plan? Wardrobe crisis? Get the latest runway trends and essential fashion delivered from Bengaluru's finest boutiques to your doorstep, faster than you can pick a filter.
-            </p>
-            <a href="#" class="pulse-button bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-10 text-lg rounded-full transition-transform transform hover:scale-105">
-                Unlock Instant Style
-            </a>
-        </div>
-    </main>
-
-    <!-- How It Works Section -->
-    <section id="how-it-works" class="py-20 bg-gray-800">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-2">Get Dressed in a Flash</h2>
-            <p class="text-gray-400 mb-12">Three simple steps to elevate your look.</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                <!-- Step 1 -->
-                <div class="fade-in">
-                    <div class="bg-gray-900 p-8 rounded-full w-32 h-32 mx-auto flex items-center justify-center mb-4 border-4 border-orange-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-2">1. Browse & Select</h3>
-                    <p class="text-gray-400">Explore curated collections on our app from the best local stores.</p>
-                </div>
-                <!-- Step 2 -->
-                <div class="fade-in">
-                    <div class="bg-gray-900 p-8 rounded-full w-32 h-32 mx-auto flex items-center justify-center mb-4 border-4 border-orange-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-2">2. Pin Your Location</h3>
-                    <p class="text-gray-400">Just drop a pin anywhere in Bengaluru. We'll find you.</p>
-                </div>
-                <!-- Step 3 -->
-                <div class="fade-in">
-                    <div class="bg-gray-900 p-8 rounded-full w-32 h-32 mx-auto flex items-center justify-center mb-4 border-4 border-orange-500">
-                         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2 2h8a1 1 0 001-1zM3 11h10M16 16l4-4m0 0l-4-4m4 4H9" />
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-2">3. Unbox in 60 Mins</h3>
-                    <p class="text-gray-400">Our style riders will have your order at your door in an hour. Guaranteed.</p>
-                </div>
+            
+            <!-- Game Grid -->
+            <div class="game-grid" id="game-grid">
+                <!-- Grid cells will be generated by JavaScript -->
+            </div>
+            
+            <!-- Game Messages -->
+            <div class="mt-4 p-3 bg-black bg-opacity-70 rounded-lg border border-cyan-400 min-h-[50px] w-full max-w-lg">
+                <p class="text-sm cyber-blue" id="game-message">Welcome to CyberGuard Quest! Use arrow keys to navigate the computer system.</p>
             </div>
         </div>
-    </section>
 
-    <!-- Featured Collections Section -->
-    <section id="collections" class="py-20 bg-gray-900">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Hot off the Hanger</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Product Card 1 -->
-                <div class="card-float bg-gray-800 rounded-lg overflow-hidden fade-in">
-                    <img src="https://placehold.co/400x500/1f2937/fb923c?text=Cocktail+Dress" alt="Cocktail Dress" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold">Midnight Gala Dress</h3>
-                        <p class="text-gray-400 mt-2">Perfect for last-minute party invites.</p>
-                        <p class="text-orange-400 font-bold text-lg mt-4">₹4,999</p>
+        <!-- Right Panel - Game Legend -->
+        <div class="lg:w-1/4 space-y-4">
+            <!-- Legend -->
+            <div class="game-ui p-4">
+                <h3 class="font-orbitron font-bold cyber-blue mb-3">System Map</h3>
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 bg-green-500 border border-white rounded-sm flex items-center justify-center text-xs">►</div>
+                        <span>You (Guardian)</span>
                     </div>
-                </div>
-                <!-- Product Card 2 -->
-                <div class="card-float bg-gray-800 rounded-lg overflow-hidden fade-in">
-                    <img src="https://placehold.co/400x500/1f2937/fb923c?text=Leather+Jacket" alt="Leather Jacket" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold">Urban Rider Jacket</h3>
-                        <p class="text-gray-400 mt-2">Instantly add an edge to any outfit.</p>
-                        <p class="text-orange-400 font-bold text-lg mt-4">₹7,499</p>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 bg-gradient-to-br from-purple-600 to-blue-800 border border-gray-400"></div>
+                        <span>Secure Zone</span>
                     </div>
-                </div>
-                <!-- Product Card 3 -->
-                <div class="card-float bg-gray-800 rounded-lg overflow-hidden fade-in">
-                    <img src="https://placehold.co/400x500/1f2937/fb923c?text=Sneakers" alt="Sneakers" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold">Metro White Sneakers</h3>
-                        <p class="text-gray-400 mt-2">Your go-to for city explorations.</p>
-                        <p class="text-orange-400 font-bold text-lg mt-4">₹5,999</p>
-                    </div>
-                </div>
-                <!-- Product Card 4 -->
-                <div class="card-float bg-gray-800 rounded-lg overflow-hidden fade-in">
-                    <img src="https://placehold.co/400x500/1f2937/fb923c?text=Handbag" alt="Handbag" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold">Classic Tan Handbag</h3>
-                        <p class="text-gray-400 mt-2">Timeless elegance for every occasion.</p>
-                        <p class="text-orange-400 font-bold text-lg mt-4">₹3,999</p>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 bg-gradient-to-br from-blue-900 to-purple-900 border border-gray-600"></div>
+                        <span>Data Path</span>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-    
-    <!-- Testimonials Section -->
-    <section id="testimonials" class="py-20 bg-gray-800">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">What Bengaluru is Saying</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Testimonial 1 -->
-                <div class="bg-gray-900 p-8 rounded-lg fade-in">
-                    <p class="text-gray-300 mb-6">"BlinkFashion is a lifesaver! I had a sudden client dinner in Koramangala and my outfit arrived before my cab did. Absolutely mind-blowing service!"</p>
-                    <div class="flex items-center">
-                        <img src="https://placehold.co/50x50/f87171/ffffff?text=A" alt="Anjali R." class="w-12 h-12 rounded-full mr-4">
-                        <div>
-                            <p class="font-bold">Anjali R.</p>
-                            <p class="text-sm text-gray-400">Indiranagar</p>
-                        </div>
-                    </div>
+
+            <!-- Future Features Preview -->
+            <div class="game-ui p-4">
+                <h3 class="font-orbitron font-bold cyber-blue mb-3">Coming Soon</h3>
+                <div class="text-xs space-y-2 text-gray-300">
+                    <p>🧠 Question Blocks</p>
+                    <p>🦠 Malware Enemies</p>
+                    <p>🔒 Ransomware Challenges</p>
+                    <p>🛡️ Security Tools</p>
+                    <p>📚 Educational Content</p>
+                    <p>🏆 Achievement System</p>
                 </div>
-                <!-- Testimonial 2 -->
-                <div class="bg-gray-900 p-8 rounded-lg fade-in">
-                    <p class="text-gray-300 mb-6">"The collection is so well-curated. It's like having a personal shopper who's also the Flash. Ordered a jacket for a concert in Whitefield, got it in 52 minutes."</p>
-                    <div class="flex items-center">
-                        <img src="https://placehold.co/50x50/fb923c/ffffff?text=R" alt="Rohan S." class="w-12 h-12 rounded-full mr-4">
-                        <div>
-                            <p class="font-bold">Rohan S.</p>
-                            <p class="text-sm text-gray-400">HSR Layout</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Testimonial 3 -->
-                <div class="bg-gray-900 p-8 rounded-lg fade-in">
-                    <p class="text-gray-300 mb-6">"Finally, a fashion app that understands Bengaluru's pace! The quality is top-notch and the speed is just unreal. My go-to for all fashion emergencies."</p>
-                    <div class="flex items-center">
-                        <img src="https://placehold.co/50x50/f59e0b/ffffff?text=P" alt="Priya K." class="w-12 h-12 rounded-full mr-4">
-                        <div>
-                            <p class="font-bold">Priya K.</p>
-                            <p class="text-sm text-gray-400">Jayanagar</p>
-                        </div>
-                    </div>
+            </div>
+
+            <!-- Tips -->
+            <div class="instructions p-4 rounded-lg">
+                <h3 class="font-orbitron font-bold cyber-blue mb-3">Cyber Tips</h3>
+                <div class="text-xs space-y-2">
+                    <p class="cyber-yellow">💡 Always keep your antivirus updated!</p>
+                    <p class="cyber-yellow">💡 Use strong, unique passwords!</p>
+                    <p class="cyber-yellow">💡 Be cautious with email attachments!</p>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 py-12">
-        <div class="container mx-auto px-6 text-center text-gray-400">
-            <h2 class="text-2xl font-bold font-playfair mb-4">Blink<span class="gradient-text">Fashion</span></h2>
-            <p class="mb-6">Instant Style. Delivered.</p>
-            <div class="flex justify-center space-x-6 mb-8">
-                <a href="#" class="hover:text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg></a>
-                <a href="#" class="hover:text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg></a>
-                <a href="#" class="hover:text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.013-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.345 2.525c.636-.247 1.363-.416 2.427-.465C9.793 2.013 10.147 2 12.315 2zm-1.161 4.573a.75.75 0 01.054 1.06l-3 3a.75.75 0 11-1.114-1.004l3-3a.75.75 0 011.06-.056zM12 6.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM12 15a3 3 0 110-6 3 3 0 010 6z" clip-rule="evenodd" /></svg></a>
-            </div>
-            <p>&copy; 2025 BlinkFashion. All Rights Reserved. Made with ♡ in Bengaluru.</p>
-        </div>
-    </footer>
-
+    </div>
 
     <script>
-        // Countdown timer script
-        const countdownElement = document.getElementById('countdown');
-        let time = 3600; // 60 minutes in seconds
-
-        function updateCountdown() {
-            const minutes = Math.floor(time / 60);
-            let seconds = time % 60;
-            seconds = seconds < 10 ? '0' + seconds : seconds;
-            countdownElement.innerHTML = `${minutes}:${seconds}`;
-            time--;
-            
-            if (time < 3570) { // Reset timer after 30 seconds for demo purposes
-                time = 3600;
-            }
-        }
-        
-        // We call it every second, but start it after a short delay for effect
-        setTimeout(() => {
-           setInterval(updateCountdown, 1000);
-        }, 1000);
-
-
-        // Fade-in on scroll script
-        const faders = document.querySelectorAll('.fade-in');
-        
-        const appearOptions = {
-            threshold: 0.2, // Trigger when 20% of the element is visible
-            rootMargin: "0px 0px -50px 0px"
+        // Game State
+        const gameState = {
+            player: {
+                x: 12,
+                y: 12,
+                direction: 'right',
+                health: 100,
+                money: 0,
+                steps: 0
+            },
+            score: 0,
+            level: 1
         };
 
-        const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) {
-                    return;
-                } else {
-                    entry.target.classList.add('visible');
-                    appearOnScroll.unobserve(entry.target);
-                }
-            });
-        }, appearOptions);
+        // Game elements
+        let gameGrid;
+        let playerElement;
 
-        faders.forEach(fader => {
-            appearOnScroll.observe(fader);
-        });
+        // Initialize game
+        function initGame() {
+            gameGrid = document.getElementById('game-grid');
+            createGrid();
+            createPlayer();
+            updateUI();
+            
+            // Add keyboard event listeners
+            document.addEventListener('keydown', handleKeyPress);
+            
+            // Focus on the document to ensure keyboard events work
+            document.addEventListener('click', () => document.body.focus());
+            document.body.focus();
+        }
 
+        // Create the 25x25 grid
+        function createGrid() {
+            gameGrid.innerHTML = '';
+            for (let i = 0; i < 625; i++) { // 25 * 25 = 625 cells
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.dataset.index = i;
+                gameGrid.appendChild(cell);
+            }
+        }
+
+        // Create player character
+        function createPlayer() {
+            playerElement = document.createElement('div');
+            playerElement.className = 'player facing-right';
+            playerElement.id = 'player';
+            
+            // Position player in the center of the grid
+            updatePlayerPosition();
+            gameGrid.appendChild(playerElement);
+        }
+
+        // Update player position on screen
+        function updatePlayerPosition() {
+            const cellSize = 20;
+            const gap = 1;
+            const padding = 10;
+            
+            const pixelX = padding + (gameState.player.x * (cellSize + gap));
+            const pixelY = padding + (gameState.player.y * (cellSize + gap));
+            
+            playerElement.style.left = pixelX + 'px';
+            playerElement.style.top = pixelY + 'px';
+            playerElement.className = `player facing-${gameState.player.direction}`;
+        }
+
+        // Handle keyboard input
+        function handleKeyPress(event) {
+            switch(event.key) {
+                case 'ArrowUp':
+                    event.preventDefault();
+                    movePlayer(0, -1, 'up');
+                    break;
+                case 'ArrowDown':
+                    event.preventDefault();
+                    movePlayer(0, 1, 'down');
+                    break;
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    movePlayer(-1, 0, 'left');
+                    break;
+                case 'ArrowRight':
+                    event.preventDefault();
+                    movePlayer(1, 0, 'right');
+                    break;
+            }
+        }
+
+        // Move player
+        function movePlayer(deltaX, deltaY, direction) {
+            const newX = gameState.player.x + deltaX;
+            const newY = gameState.player.y + deltaY;
+            
+            // Check boundaries (25x25 grid, so 0-24 for both x and y)
+            if (newX >= 0 && newX < 25 && newY >= 0 && newY < 25) {
+                gameState.player.x = newX;
+                gameState.player.y = newY;
+                gameState.player.direction = direction;
+                gameState.player.steps++;
+                
+                updatePlayerPosition();
+                updateUI();
+                
+                // Show movement message
+                showMessage(`Moved ${direction} to sector (${newX}, ${newY})`);
+                
+                // Add some score for exploration
+                gameState.score += 1;
+            } else {
+                showMessage('System boundary reached! Cannot move further in that direction.');
+            }
+        }
+
+        // Update UI elements
+        function updateUI() {
+            // Update health
+            document.getElementById('health-display').textContent = `${gameState.player.health}/100`;
+            document.getElementById('health-bar').style.width = `${gameState.player.health}%`;
+            
+            // Update money
+            document.getElementById('money-display').textContent = `$${gameState.player.money}`;
+            document.getElementById('money-amount').textContent = gameState.player.money;
+            
+            // Update position
+            document.getElementById('position-display').textContent = `X: ${gameState.player.x}, Y: ${gameState.player.y}`;
+            
+            // Update score and steps
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('steps').textContent = gameState.player.steps;
+        }
+
+        // Show game messages
+        function showMessage(message) {
+            const messageElement = document.getElementById('game-message');
+            messageElement.textContent = message;
+            messageElement.classList.add('cyber-green');
+            
+            // Clear the styling after a short delay
+            setTimeout(() => {
+                messageElement.classList.remove('cyber-green');
+            }, 2000);
+        }
+
+        // Initialize the game when the page loads
+        window.addEventListener('DOMContentLoaded', initGame);
     </script>
 
 </body>
